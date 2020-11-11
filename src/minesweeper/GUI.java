@@ -85,7 +85,7 @@ public class GUI extends JFrame {
                 for (int m = 0; m < 16; m++) {
                     for (int n = 0; n < 9; n++) {
                         if (!(m == i && n == j)) { // dzięki temu nie liczy pola środkowego z minami
-                            if (isN(i, j, m, n) == true)
+                            if (isN(i, j, m, n))
                                 neighs++;
                         }
                     }
@@ -114,7 +114,7 @@ public class GUI extends JFrame {
 //                    if (mines[i][j] == 1) {
 //                        g.setColor(Color.yellow);
 //                    }
-                    if (revaled[i][j] == true) {
+                    if (revaled[i][j]) {
                         g.setColor(new Color(165, 93, 4));
                         if (mines[i][j] == 1) {
                             g.setColor(Color.red);
@@ -125,7 +125,7 @@ public class GUI extends JFrame {
                         g.setColor(Color.lightGray);
                     }
                     g.fillRect(spacing + i * 60, spacing + j * 60 + 60, 60 - 2 * spacing, 60 - 2 * spacing);
-                    if (revaled[i][j] == true) {
+                    if (revaled[i][j]) {
                         g.setColor(Color.black);
                         if (mines[i][j] == 0 && neighbours[i][j] != 0) {
                             if (neighbours[i][j] == 1) {
@@ -156,7 +156,7 @@ public class GUI extends JFrame {
                         }
                     }
                     // rysuje flagę
-                    if (flagged[i][j] == true) {
+                    if (flagged[i][j]) {
                         g.setColor(Color.black);
                         g.fillRect(i * 60 + 27, j * 60 + 70 + 8, 5, 31);
                         g.fillRect(i * 60 + 17, j * 60 + 70 + 33, 25, 5);
@@ -174,7 +174,7 @@ public class GUI extends JFrame {
             g.setColor(Color.black);
             g.fillOval(smileyX + 10, smileyY + 12, 8, 8); // lewe oko
             g.fillOval(smileyX + 30, smileyY + 12, 8, 8); // prawe oko
-            if (happiness == true) {
+            if (happiness) {
                 g.fillRect(smileyX + 11, smileyY + 32, 28, 4);
                 g.fillRect(smileyX + 10, smileyY + 28, 4, 4);
                 g.fillRect(smileyX + 36, smileyY + 28, 4, 4);
@@ -195,7 +195,7 @@ public class GUI extends JFrame {
             g.drawRect(flaggerX + 9, flaggerY + 8, 20, 12);
             g.drawRect(flaggerX + 10, flaggerY + 9, 18, 10);
 
-            if (flagger == true) {
+            if (flagger) {
                 g.setColor(Color.red);
             }
             g.drawOval(flaggerX, flaggerY, 50, 50);
@@ -205,17 +205,17 @@ public class GUI extends JFrame {
             // pokazuje czas gry
             g.setColor(Color.black);
             g.fillRect(timeX, timeY, 118, 55);
-            if (defeat == false & victory == false) { // zatrzymuje zagar
+            if (!defeat & !victory) { // zatrzymuje zagar
                 sec = (int) ((new Date().getTime() - startDate.getTime()) / 1000);
             }
             if (sec > 999) {
                 sec = 999;
             }
             g.setColor(new Color(216, 113, 54));
-            if (victory == true) {  // zmienia kolor zegara na zielony
+            if (victory) {  // zmienia kolor zegara na zielony
                 g.setColor(Color.green);
             }
-            if (defeat == true) { // zmienia kolor zegara na czerwony
+            if (defeat) { // zmienia kolor zegara na czerwony
                 g.setColor(Color.red);
             }
             g.setFont(new Font("Arial", Font.PLAIN, 50));
@@ -229,15 +229,15 @@ public class GUI extends JFrame {
 
             // rysowanie wiadmości o zwycięstwie
 
-            if (victory == true) {
+            if (victory) {
                 g.setColor(Color.green);
                 vicMes = "Wygrałeś!!!";
-            } else if (defeat == true) {
+            } else if (defeat) {
                 g.setColor(Color.red);
                 vicMes = "Przegrałeś!!!";
             }
 
-            if (victory == true || defeat == true) {
+            if (victory || defeat) {
                 vicMesY = -50 + (int) (new Date().getTime() - endDate.getTime()) / 10;
                 if (vicMesY > 50) { // zatrzymuje napis
                     vicMesY = 50;
@@ -282,8 +282,8 @@ public class GUI extends JFrame {
 
             if (inBoxX() != -1 && inBoxY() != -1) {
                 System.out.println("Kliknięcie w: " + inBoxX() + " " + inBoxY() + "  liczba sąsiadów min: " + neighbours[inBoxX()][inBoxY()]);
-                if (flagger == true && revaled[inBoxX()][inBoxY()] == false) {
-                    if (flagged[inBoxX()][inBoxY()] == false) {
+                if (flagger && !revaled[inBoxX()][inBoxY()]) {
+                    if (!flagged[inBoxX()][inBoxY()]) {
                         flagged[inBoxX()][inBoxY()] = true;
                         flaggedCount++;
                     } else {
@@ -291,7 +291,7 @@ public class GUI extends JFrame {
                         flaggedCount--;
                     }
                 } else {
-                    if (flagged[inBoxX()][inBoxY()] == false) {
+                    if (!flagged[inBoxX()][inBoxY()]) {
                         revaled[inBoxX()][inBoxY()] = true;
                     }
                 }
@@ -299,12 +299,12 @@ public class GUI extends JFrame {
 //                System.out.println("Kliknięcie poza");
             }
 
-            if (inSmiley() == true) {
+            if (inSmiley()) {
                 resetAll();
             }
 
-            if (inFlagger() == true) {
-                if (flagger == false) {
+            if (inFlagger()) {
+                if (!flagger) {
                     flagger = true;
                 } else {
                     flagger = false;
@@ -335,10 +335,10 @@ public class GUI extends JFrame {
     }
 
     public void checkVictoryStatus() {
-        if (defeat == false) {
+        if (!defeat) {
             for (int i = 0; i < 16; i++) {
                 for (int j = 0; j < 9; j++) {
-                    if (revaled[i][j] == true && mines[i][j] == 1) {
+                    if (revaled[i][j] && mines[i][j] == 1) {
                         defeat = true;
                         happiness = false;
                         endDate = new Date();
@@ -347,7 +347,7 @@ public class GUI extends JFrame {
             }
         }
 
-        if (totalBoxesRevealed() >= 144 - totalMines() && victory == false) {
+        if (totalBoxesRevealed() >= 144 - totalMines() && !victory) {
             victory = true;
             endDate = new Date();
         }
@@ -369,7 +369,7 @@ public class GUI extends JFrame {
         int total = 0;
         for (int i = 0; i < 16; i++) {
             for (int j = 0; j < 9; j++) {
-                if (revaled[i][j] == true) {
+                if (revaled[i][j]) {
                     total++;
                 }
             }
@@ -412,7 +412,7 @@ public class GUI extends JFrame {
                 for (int m = 0; m < 16; m++) {
                     for (int n = 0; n < 9; n++) {
                         if (!(m == i && n == j)) { // dzięki temu nie liczy pola środkowego z minami
-                            if (isN(i, j, m, n) == true)
+                            if (isN(i, j, m, n))
                                 neighs++;
                         }
                     }
